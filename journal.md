@@ -14,3 +14,12 @@ The instructions to follow are for Linux:
 4. in the terminal executed this line "./balenaEtcher-1.19.21-arm64.dmg --no-sandbox"
 5. Click “Select image” and choose the zipped image file downloaded earlier.
 6. 
+
+links
+https://developer.nvidia.com/embedded/learn/get-started-jetson-nano-devkit#write
+
+https://blog.roboflow.com/how-to-deploy-to-jetson-orin-nano-computer-vision/
+
+https://forums.developer.nvidia.com/t/deploy-a-pretrained-custom-model-in-jetson-nano/208930
+
+https://github.com/dusty-nv/jetson-inferences
