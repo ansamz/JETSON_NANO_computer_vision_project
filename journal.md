@@ -4,7 +4,8 @@
 
 1. attached a 32 GB microSD card.
 2. connected it to a power supply that can deliver 5V⎓2A.
-3. Download the Jetson Nano Developer Kit SD Card Image. can be found [here](https://developer.nvidia.com/embedded/learn/get-started-jetson-nano-devkit#write).
+3. Download the Jetson Nano Developer Kit SD Card Image. can be found [here](https://developer.nvidia.com/embedded/downloads#?search=image).
+4. insert the SD card in your computer.
 
 The instructions to follow are for Linux:
 1. Install etcher from etcher.balena.io
