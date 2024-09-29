@@ -8,12 +8,12 @@
 4. insert the SD card in your computer.
 
 The instructions to follow are for Linux:
-1. Install etcher from etcher.balena.io
-2. First downloaded the AppImage balenaEtcher-1.19.21-arm64.dmg from https://github.com/balena-io/etcher/releases/
-3. gave it permission to be an executable 
-4. in the terminal executed this line "./balenaEtcher-1.19.21-arm64.dmg --no-sandbox"
-5. Click “Select image” and choose the zipped image file downloaded earlier.
-6. 
+
+> **_NOTE:_** The user guide instructions using etcher didn't work so I used this methos instead.
+
+1. unzip the image
+2. run this command: sudo dd if=Downloads/sd-blob-b01.img of=/dev/mmcblk0 bs=1M
+3. Eject the SD card from computer via command line or file application.
 
 links
 https://developer.nvidia.com/embedded/learn/get-started-jetson-nano-devkit#write
