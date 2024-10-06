@@ -47,13 +47,29 @@ I'll use the TorchScript version, as it's generally easier to deploy on edge dev
    Use SCP or a USB drive to transfer `best_model_traced_TorchScript.pt` to the Jetson Nano.
 
 2. **Set up the Python environment on Jetson Nano**:
+
+The python version installed on the JETSON NANO is 3.8.10, an old version that created problems running pytorch, the error was:
+
+`Illegal instruction(core dumped)`
+
+TODO
+
+To upgrade to a more recent version:
+
    ```bash
    sudo apt-get update
    sudo apt-get install python3-pip
+
+   sudo apt-get update # needed to run an update again for installing the environment without issues
+
+   sudo apt install python3-venv
+   python3 -m venv mri_detector-env
+   source mri_detector-env/bin/activate
+   pip3 install --upgrade pip
    pip3 install torch torchvision
    ```
 
-3. **Create a deployment script**:
+3. **Create a deployment script to test the model**:
    Create a new Python file, e.g., `deploy_model.py`, with the following content:
 
 ```python:deploy_model.py
@@ -61,33 +77,27 @@ import torch
 import torchvision.transforms as transforms
 from PIL import Image
 
-# Load the model
 model = torch.jit.load('best_model_traced_TorchScript.pt')
 model.eval()
 
-# Define the image transformations
 transform = transforms.Compose([
     transforms.Resize((150, 150)),
     transforms.ToTensor(),
     transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
 ])
 
-# Define the class labels
 classes = ['no_tumor', 'glioma_tumor', 'meningioma_tumor', 'pituitary_tumor']
 
 def predict(image_path):
-    # Load and preprocess the image
     image = Image.open(image_path)
     image = transform(image).unsqueeze(0)
 
-    # Make prediction
     with torch.no_grad():
         outputs = model(image)
         _, predicted = torch.max(outputs, 1)
 
     return classes[predicted.item()]
 
-# Test the model
 test_image_path = 'path/to/test/image.jpg'
 prediction = predict(test_image_path)
 print(f"The predicted class is: {prediction}")
@@ -114,22 +124,18 @@ import torchvision.transforms as transforms
 from PIL import Image
 import torch2trt
 
-# Load the model
 model = torch.jit.load('best_model_traced_TorchScript.pt')
 model.eval()
 
-# Convert to TensorRT
 x = torch.randn((1, 3, 150, 150)).cuda()
 model_trt = torch2trt.torch2trt(model, [x])
 
 # ... rest of the code remains the same ...
 
 def predict(image_path):
-    # Load and preprocess the image
     image = Image.open(image_path)
     image = transform(image).unsqueeze(0).cuda()
 
-    # Make prediction
     with torch.no_grad():
         outputs = model_trt(image)
         _, predicted = torch.max(outputs, 1)
