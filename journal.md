@@ -52,7 +52,7 @@ The python version installed on the JETSON NANO is 3.8.10, an old version that c
 
 `Illegal instruction(core dumped)`
 
-TODO
+TODO write about upgrading ubuntu and then python and then fix the script
 
 To upgrade to a more recent version:
 
