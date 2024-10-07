@@ -52,18 +52,54 @@ The python version installed on the JETSON NANO is 3.8.10, an old version that c
 
 `Illegal instruction(core dumped)`
 
-TODO write about upgrading ubuntu and then python and then fix the script
 
-To upgrade to a more recent version:
+To upgrade Ubuntu and Python on the Jetson Nano, I followed these steps:
+
+a. **Remove Chromium and OpenCV** (as they can interfere with the upgrade process):
+   ```bash
+   sudo apt-get remove --purge chromium-browser chromium-browser-l10n
+   ```
+
+b. **Update and upgrade the system**:
+   ```bash
+   sudo apt-get update
+   sudo apt-get install nano
+   sudo apt-get upgrade
+   sudo apt-get autoremove
+   ```
+
+c. **Modify the release upgrade settings**:
+   ```bash
+   sudo nano /etc/update-manager/release-upgrades
+   ```
+   In this file, change `prompt = never` to `prompt = normal`
+
+d. **Perform the distribution upgrade**:
+   ```bash
+   sudo apt-get update
+   sudo apt-get dist-upgrade
+   sudo reboot
+   ```
+
+e. **Install Python 3.12**:
+   ```bash
+   sudo apt update && sudo apt upgrade -y
+   sudo add-apt-repository ppa:deadsnakes/ppa
+   sudo apt update
+   apt list | grep python3.12
+   sudo apt install python3.12
+   ```
+
+After upgrading Ubuntu and Python:
 
    ```bash
    sudo apt-get update
-   sudo apt-get install python3-pip
+   sudo apt-get install python3.12-pip
 
    sudo apt-get update # needed to run an update again for installing the environment without issues
 
-   sudo apt install python3-venv
-   python3 -m venv mri_detector-env
+   sudo apt install python3.12-venv
+   python3.12 -m venv mri_detector-env
    source mri_detector-env/bin/activate
    pip3 install --upgrade pip
    pip3 install torch torchvision
@@ -77,30 +113,32 @@ import torch
 import torchvision.transforms as transforms
 from PIL import Image
 
-model = torch.jit.load('best_model_traced_TorchScript.pt')
+model = torch.jit.load('best_model_traced_TorchScript.pt', map_location=torch.device('cpu'))
 model.eval()
+
+print("model eval done")
 
 transform = transforms.Compose([
     transforms.Resize((150, 150)),
     transforms.ToTensor(),
-    transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
-])
+    transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])])
 
-classes = ['no_tumor', 'glioma_tumor', 'meningioma_tumor', 'pituitary_tumor']
+classes = ['glioma_tumor', 'meningioma_tumor', 'no_tumor', 'pituitary_tumor']
 
 def predict(image_path):
     image = Image.open(image_path)
     image = transform(image).unsqueeze(0)
 
+    print("predicting")
     with torch.no_grad():
         outputs = model(image)
         _, predicted = torch.max(outputs, 1)
+        print("done predicting")
+    return classes[predicted[0].item()]
 
-    return classes[predicted.item()]
-
-test_image_path = 'path/to/test/image.jpg'
+test_image_path = 'no_image(3).jpg'
 prediction = predict(test_image_path)
-print(f"The predicted class is: {prediction}")
+print(f"Predicted calss is: {prediction}")
 ```
 
 4. **Run the deployment script**:
@@ -140,13 +178,22 @@ def predict(image_path):
         outputs = model_trt(image)
         _, predicted = torch.max(outputs, 1)
 
-    return classes[predicted.item()]
+    return classes[predicted[0].item()]
 
 # ... rest of the code remains the same ...
 ```
 
 6. **Create a simple UI**:
    For graphical interface, you can use libraries like Tkinter:
+
+Installation:
+
+   ```bash
+   sudo apt-get install python3-tk
+   pip3 install Pillow
+   ```
+
+After ensuring these are installed, you should be able to run the UI script without any additional library installations.
 
 ```python:deploy_model_gui.py
 import tkinter as tk
@@ -183,9 +230,3 @@ result_label.pack()
 root.mainloop()
 ```
 
-
-links:
-
-https://blog.roboflow.com/how-to-deploy-to-jetson-orin-nano-computer-vision/
-
-https://forums.developer.nvidia.com/t/deploy-a-pretrained-custom-model-in-jetson-nano/208930
