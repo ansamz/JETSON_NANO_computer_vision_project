@@ -42,12 +42,6 @@ Key steps in the project:
 2. Set up a Python virtual environment
 3. Install required Python packages (PyTorch, torchvision, etc.)
 
-### 🚀 Model Deployment
-1. Clone this repository: `git clone https://github.com/yourusername/brain-tumor-detection-jetson.git`
-2. Navigate to the project directory: `cd brain-tumor-detection-jetson`
-3. Install dependencies: `pip install -r requirements.txt`
-4. Run the deployment script: `python deploy_model.py`
-
 ## 🖱️Usage
 1. Launch the GUI: `python deploy_model_gui.py`
 2. Click "Select Image" to choose an MRI image for analysis
