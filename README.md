@@ -59,3 +59,9 @@ brain-tumor-detection-jetson/
 ├── deploy_model_gui.py
 ├── README.md
 ```
+
+## 🔗 Model Source
+The PyTorch model used in this project was trained using the code from the following repository:
+[MRI_Tumor_Classification_Pytorch](https://github.com/ansamz/MRI_Tumor_Classification_Pytorch)
+
+This repository contains the training code and methodology for the brain tumor classification model deployed on the Jetson Nano in this project.
